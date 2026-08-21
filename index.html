@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ease Lab</title>
+  <style>
+    :root{--bg:#10131b;--panel:#171c28;--panel2:#1d2432;--line:#30394b;--text:#edf2ff;--muted:#8f9bb2;--accent:#a8f09a;--accent2:#8dd8ff;--shadow:0 18px 50px #0006}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 80% -10%,#28404e 0,#10131b 42%);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+    .shell{max-width:1440px;margin:auto;padding:30px 28px 70px}.eyebrow{color:var(--accent);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}.hero{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:28px}.hero h1{font-size:clamp(34px,5vw,68px);line-height:.95;letter-spacing:-.055em;margin:8px 0 12px}.hero p{color:var(--muted);max-width:660px;margin:0;font-size:15px}.badge{border:1px solid #ffffff16;background:#ffffff09;border-radius:999px;padding:8px 12px;color:#c9d5ed;white-space:nowrap;font-size:12px}
+    .card{background:linear-gradient(145deg,#1b2130f5,#131824f5);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.section-head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px 16px}.section-head h2{margin:0;font-size:18px;letter-spacing:-.02em}.section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}.count{color:var(--accent);font-variant-numeric:tabular-nums}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:0 18px 20px}.tile{overflow:hidden;border:1px solid #ffffff10;background:#111620;border-radius:14px}.tile-top{display:flex;justify-content:space-between;align-items:center;padding:12px 13px 9px}.tile-name{font-weight:700;font-size:13px}.tile-code{color:#70819c;font:10px ui-monospace,monospace}.stage{height:104px;position:relative;overflow:hidden;background-color:#131b25;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:26px 26px}.stage:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#101620 0,transparent 22%,transparent 78%,#101620 100%);pointer-events:none}.dot{position:absolute;width:27px;height:27px;border-radius:8px;background:var(--accent);box-shadow:0 0 20px #a8f09a80;left:16px;top:38px;z-index:1}.timeline{display:none}
+    .lab{margin-top:22px;display:grid;grid-template-columns:300px 1fr;gap:0;overflow:hidden}.controls{padding:22px;background:#161c28;border-right:1px solid var(--line)}.controls h2{margin:0 0 4px}.controls p{margin:0 0 20px;color:var(--muted);font-size:12px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{color:#b8c3d9;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}input,select{width:100%;border:1px solid var(--line);background:#0f141d;color:var(--text);border-radius:9px;padding:10px 11px;font:inherit;outline:none}input:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px #8dd8ff16}input[type=number]{font-variant-numeric:tabular-nums}.hint{color:#6e7b91;font-size:11px;margin-top:18px}.preview{padding:22px;min-width:0}.preview-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.preview-top strong{font-size:15px}.readout{color:var(--accent);font:12px ui-monospace,monospace}.big-stage{height:330px;border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden;background-color:#111821;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:32px 32px}.big-stage .axis{position:absolute;color:#64738b;font:10px ui-monospace,monospace;opacity:.9}.xaxis{right:10px;bottom:9px}.yaxis{left:10px;top:9px}.target{position:absolute;right:32px;bottom:30px;width:var(--w);height:var(--h);border:1px dashed #8dd8ff99;border-radius:var(--r);opacity:.7}.moving{position:absolute;left:32px;top:30px;width:var(--w);height:var(--h);border-radius:var(--r);background:linear-gradient(135deg,var(--accent),#5bc5d0);box-shadow:0 8px 26px #66d5d06b;display:grid;place-items:center;color:#10201e;font-weight:800;font-size:11px}.legend{display:flex;gap:16px;margin-top:12px;color:var(--muted);font-size:11px}.legend span:before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;border-radius:3px;background:var(--accent)}.legend span:last-child:before{background:transparent;border:1px dashed var(--accent2);vertical-align:-1px}.tip{margin-top:14px;color:#7e8ba3;font-size:11px}.tip code{color:#c1d5ed;background:#ffffff0c;padding:2px 5px;border-radius:4px}
+    @media(max-width:760px){.shell{padding:22px 14px 50px}.hero{display:block}.badge{display:inline-block;margin-top:20px}.lab{grid-template-columns:1fr}.controls{border-right:0;border-bottom:1px solid var(--line)}.big-stage{height:260px}.grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));padding-left:12px;padding-right:12px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero"><h1>Ease Lab</h1></header>
+    <section class="card"><div class="section-head"><div><h2>All EaseTypes</h2><p>Every tile loops automatically so the motion language is easy to compare.</p></div><div class="count"><span id="count">0</span> types</div></div><div class="grid" id="grid"></div></section>
+    <section class="card lab"><aside class="controls"><div class="eyebrow">Experiment</div><h2>Custom tween</h2><p>Change any input and the animation restarts immediately.</p><div class="fields">
+      <div class="field"><label for="ax">Point A · X</label><input id="ax" type="number" value="100" min="0" max="1000" step="100"></div><div class="field"><label for="ay">Point A · Y</label><input id="ay" type="number" value="140" min="0" max="1000"></div>
+      <div class="field"><label for="bx">Point B · X</label><input id="bx" type="number" value="400" min="0" max="1000" step="100"></div><div class="field"><label for="by">Point B · Y</label><input id="by" type="number" value="140" min="0" max="1000"></div>
+      <div class="field full"><label id="ease-picker-label">EaseType</label><div class="ease-picker" aria-labelledby="ease-picker-label"><div class="ease-picker-current"><span>Selected</span><strong id="easePickerValue">EaseType.InCubic</strong></div><div class="ease-picker-section"><span class="ease-picker-section-label">Family</span><div class="ease-family-options" id="easeFamilyOptions"></div></div><div class="ease-picker-section"><span class="ease-picker-section-label">Direction</span><div class="ease-direction-options" id="easeDirectionOptions"></div></div></div><select id="ease" class="ease-native-select" tabindex="-1" aria-hidden="true"></select></div>
+      <div class="field"><label for="duration">Time · ms</label><input id="duration" type="number" value="1200" min="80" max="10000" step="50"></div><div class="field"><label for="radius">Radius · px</label><input id="radius" type="number" value="14" min="0" max="100"></div>
+      <div class="field"><label for="width">Width · px</label><input id="width" type="number" value="72" min="12" max="240"></div><div class="field"><label for="height">Height · px</label><input id="height" type="number" value="48" min="12" max="240"></div>
+    </div><div class="hint">Point coordinates are measured from the top-left of the preview stage.</div></aside>
+    <div class="preview"><div class="preview-top"><strong id="selectedLabel">InOutCubic</strong><span class="readout" id="readout">0.00 s · 0%</span></div><div class="big-stage" id="bigStage"><span class="axis yaxis">Y ↓</span><span class="axis xaxis">X →</span><div class="target" id="target"></div><div class="moving" id="moving">MOVE</div></div><div class="legend"><span>animated rectangle</span><span>point B</span></div><div class="tip">Choose a curve family and direction to compare motion styles.</div></div></section>
+  </main>
+  <script>
+    const types = [
+      ['Linear',t=>t],['InSine',t=>1-Math.cos(t*Math.PI/2)],['OutSine',t=>Math.sin(t*Math.PI/2)],['InOutSine',t=>(1-Math.cos(Math.PI*t))/2],
+      ['InQuad',t=>t*t],['OutQuad',t=>1-(1-t)**2],['InOutQuad',t=>t<.5?2*t*t:1-(-2*t+2)**2/2],
+      ['InCubic',t=>t**3],['OutCubic',t=>1-(1-t)**3],['InOutCubic',t=>t<.5?4*t**3:1-(-2*t+2)**3/2],
+      ['InQuart',t=>t**4],['OutQuart',t=>1-(1-t)**4],['InOutQuart',t=>t<.5?8*t**4:1-(-2*t+2)**4/2],
+      ['InQuint',t=>t**5],['OutQuint',t=>1-(1-t)**5],['InOutQuint',t=>t<.5?16*t**5:1-(-2*t+2)**5/2],
+      ['InExpo',t=>t===0?0:2**(10*t-10)],['OutExpo',t=>t===1?1:1-2**(-10*t)],['InOutExpo',t=>t===0?0:t===1?1:t<.5?2**(20*t-10)/2:(2-2**(-20*t+10))/2],
+      ['InCirc',t=>1-Math.sqrt(1-t*t)],['OutCirc',t=>Math.sqrt(1-(t-1)**2)],['InOutCirc',t=>t<.5?(1-Math.sqrt(1-(2*t)**2))/2:(Math.sqrt(1-(-2*t+2)**2)+1)/2],
+      ['InBack',t=>2.70158*t**3-1.70158*t**2],['OutBack',t=>1+2.70158*(t-1)**3+1.70158*(t-1)**2],['InOutBack',t=>{const c=2.5949095;return t<.5?((2*t)**2*((c+1)*2*t-c))/2:(((2*t-2)**2*((c+1)*(t*2-2)+c)+2)/2)}],
+      ['InElastic',t=>t===0||t===1?t:-(2**(10*t-10))*Math.sin((t*10-10.75)*(2*Math.PI/3))],['OutElastic',t=>t===0||t===1?t:2**(-10*t)*Math.sin((t*10-.75)*(2*Math.PI/3))+1],['InOutElastic',t=>t===0||t===1?t:t<.5?-(2**(20*t-10)*Math.sin((20*t-11.125)*(2*Math.PI/4.5)))/2:(2**(-20*t+10)*Math.sin((20*t-11.125)*(2*Math.PI/4.5)))/2+1],
+      ['InBounce',t=>1-bounce(1-t)],['OutBounce',bounce],['InOutBounce',t=>t<.5?(1-bounce(1-2*t))/2:(1+bounce(2*t-1))/2]
+    ];
+    function bounce(t){const n=7.5625,d=2.75; if(t<1/d)return n*t*t;if(t<2/d){t-=1.5/d;return n*t*t+.75}if(t<2.5/d){t-=2.25/d;return n*t*t+.9375}t-=2.625/d;return n*t*t+.984375}
+    const $=id=>document.getElementById(id), grid=$('grid'), ease=$('ease'); $('count').textContent=types.length;
+    types.forEach(([name,fn],i)=>{const opt=document.createElement('option');opt.value=i;opt.textContent='EaseType.'+name;ease.appendChild(opt);const tile=document.createElement('article');tile.className='tile';tile.innerHTML='<div class="tile-top"><span class="tile-name">'+name+'</span><span class="tile-code">'+String(i+1).padStart(2,'0')+'</span></div><div class="stage"><div class="dot"></div></div><div class="timeline"><i></i></div>';grid.appendChild(tile);const dot=tile.querySelector('.dot'),bar=tile.querySelector('i');let start=performance.now()+i*80;function tick(now){const elapsed=(now-start)%2250,p=Math.min(1,elapsed/1800);dot.style.transform='translateX('+(p*165)+'px)';bar.style.width=(p*100)+'%';requestAnimationFrame(tick)}requestAnimationFrame(tick)});
+    const inputs=['ax','ay','bx','by','duration','radius','width','height'].map($);let raf=0,start=0;
+    function val(id){return Math.max(0,Number($(id).value)||0)} function restart(){cancelAnimationFrame(raf);start=performance.now();render(start)}
+    function render(now){const stage=$('bigStage'),w=val('width'),h=val('height'),r=val('radius'),ax=val('ax'),ay=val('ay'),bx=val('bx'),by=val('by'),dur=Math.max(80,val('duration')),elapsed=now-start,p=Math.min(1,elapsed/dur),fn=types[Number(ease.value)][1],q=fn(p);stage.style.setProperty('--w',w+'px');stage.style.setProperty('--h',h+'px');stage.style.setProperty('--r',r+'px');$('target').style.left=bx+'px';$('target').style.top=by+'px';$('moving').style.left=(ax+(bx-ax)*q)+'px';$('moving').style.top=(ay+(by-ay)*q)+'px';$('readout').textContent=(Math.min(dur,now-start)/1000).toFixed(2)+' s · '+Math.round(p*100)+'%';$('selectedLabel').textContent=types[Number(ease.value)][0];if(elapsed>=dur+450){start=now;raf=requestAnimationFrame(render)}else raf=requestAnimationFrame(render)}
+    [...inputs,ease].forEach(el=>el.addEventListener('input',restart));ease.value=7;restart();
+  </script>
+
+<style>
+  [role="tabpanel"][hidden]{display:none!important}
+  .hero{justify-content:center;text-align:center}
+  .quick-nav{display:flex;align-items:center;justify-content:center;gap:5px;position:sticky;top:12px;z-index:10;width:max-content;margin:0 auto 18px;padding:4px;background:#0d121af2;border:1px solid #30394b;border-radius:12px;box-shadow:0 10px 30px #0005}
+  .quick-nav button,.filter-bar button{border:0;background:transparent;color:#8f9bb2;border-radius:8px;padding:9px 14px;font:700 12px Inter,system-ui,sans-serif;cursor:pointer}
+  .quick-nav button.active,.filter-bar button.active{background:#a8f09a;color:#10201e}
+  .filter-bar{display:flex;flex-wrap:wrap;gap:10px 20px;margin:0 18px 16px;padding:14px;background:#111620;border:1px solid #ffffff10;border-radius:13px}
+  .filter-group{display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+  .filter-label{margin-right:4px;color:#70819c;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  .filter-bar button{padding:7px 10px;border:1px solid transparent}
+  .filter-bar button:not(.active):hover{color:#d9e3f7;border-color:#30394b}
+  .tile[hidden]{display:none!important}
+  .grid{display:block;padding:0 0 6px}
+  .ease-group{padding:0 18px 20px}
+  .ease-group[hidden]{display:none!important}
+  .ease-group-head{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 10px;padding-top:8px;border-top:1px solid #ffffff10}
+  .ease-group:first-child .ease-group-head{border-top:0;padding-top:0}
+  .ease-group-head h3{margin:0;font-size:13px;letter-spacing:.02em}
+  .ease-group-count{color:#70819c;font:11px ui-monospace,monospace}
+  .ease-group-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .stage{height:120px}
+  .dot{left:0;top:46px;z-index:3}
+  .point-marker{position:absolute;top:13px;bottom:13px;width:1px;background:#8dd8ff55;z-index:2}
+  .point-marker:after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;transform:translate(-50%,-50%);border:1px solid #8dd8ff;border-radius:50%;background:#131b25;box-shadow:0 0 10px #8dd8ff55}
+  .point-marker b{position:absolute;top:-2px;left:50%;transform:translate(-50%,-100%);color:#8dd8ff;font:800 9px ui-monospace,monospace}
+  .lab{grid-template-columns:380px minmax(0,1fr)}
+  .ease-native-select{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+  .ease-picker{padding:11px;background:#0f141d;border:1px solid #30394b;border-radius:12px}
+  .ease-picker-current{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 3px 10px;border-bottom:1px solid #ffffff10}
+  .ease-picker-current span,.ease-picker-section-label{color:#70819c;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  .ease-picker-current strong{color:#a8f09a;font:11px ui-monospace,monospace;text-align:right}
+  .ease-picker-section{margin-top:10px}.ease-picker-section-label{display:block;margin:0 2px 6px}
+  .ease-family-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  .ease-direction-options{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+  .ease-picker button{min-width:0;border:1px solid #30394b;background:#161c28;color:#a9b4c8;border-radius:7px;padding:7px 5px;font:700 11px Inter,system-ui,sans-serif;cursor:pointer}
+  .ease-picker button:hover{border-color:#8dd8ff;color:#edf2ff}.ease-picker button.active{border-color:#a8f09a;background:#a8f09a;color:#10201e}
+  .ease-picker button:disabled{cursor:not-allowed;opacity:.35}
+  @media(max-width:760px){.filter-bar{margin-left:12px;margin-right:12px}.filter-group{width:100%}.ease-group{padding-left:12px;padding-right:12px}.ease-group-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}.lab{grid-template-columns:1fr}}
+</style>
+<script>
+  const quickNav=document.createElement('nav');
+  quickNav.className='quick-nav';
+  quickNav.setAttribute('aria-label','View selection');
+  quickNav.setAttribute('role','tablist');
+  quickNav.innerHTML='<button class="active" role="tab" aria-selected="true" data-view="overview">All EaseTypes</button><button role="tab" aria-selected="false" data-view="experiment">Experiment</button>';
+  document.querySelector('.hero').after(quickNav);
+
+  const overviewPanel=document.querySelector('.card:not(.lab)');
+  const experimentPanel=document.querySelector('.lab');
+  overviewPanel.setAttribute('role','tabpanel');
+  overviewPanel.setAttribute('aria-label','All EaseTypes');
+  experimentPanel.setAttribute('role','tabpanel');
+  experimentPanel.setAttribute('aria-label','Experiment');
+
+  let experimentDefaultsPositioned=false;
+  function positionExperimentDefaults(){
+    const stage=$('bigStage');
+    const availableX=Math.max(0,stage.clientWidth-val('width'));
+    const centeredY=Math.max(0,Math.round((stage.clientHeight-val('height'))/2));
+    const maxHundred=Math.max(0,Math.floor(availableX/100)*100);
+    const centeredA=Math.min(maxHundred,Math.max(0,Math.round(availableX*.24/100)*100));
+    const centeredB=Math.min(maxHundred,Math.max(centeredA+100,Math.round(availableX*.70/100)*100));
+    $('ax').value=centeredA;
+    $('bx').value=centeredB;
+    $('ay').value=centeredY;
+    $('by').value=centeredY;
+    experimentDefaultsPositioned=true;
+    restart();
+  }
+  function selectView(view){
+    const showExperiment=view==='experiment';
+    overviewPanel.hidden=showExperiment;
+    experimentPanel.hidden=!showExperiment;
+    quickNav.querySelectorAll('button').forEach(button=>{
+      const selected=button.dataset.view===view;
+      button.classList.toggle('active',selected);
+      button.setAttribute('aria-selected',String(selected));
+    });
+    if(showExperiment&&!experimentDefaultsPositioned)requestAnimationFrame(positionExperimentDefaults);
+  }
+  quickNav.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>selectView(button.dataset.view)));
+  selectView('overview');
+
+  const pickerFamilies=['Linear','Sine','Quad','Cubic','Quart','Quint','Expo','Circ','Back','Elastic','Bounce'];
+  const pickerDirections=['In','Out','InOut'];
+  const familyOptions=$('easeFamilyOptions');
+  const directionOptions=$('easeDirectionOptions');
+  familyOptions.innerHTML=pickerFamilies.map(family=>'<button type="button" data-family="'+family+'">'+family+'</button>').join('');
+  directionOptions.innerHTML=pickerDirections.map(direction=>'<button type="button" data-direction="'+direction+'">'+direction+'</button>').join('');
+  let pickerFamily='Cubic',pickerDirection='In';
+  function updateEasePicker(){
+    const isLinear=pickerFamily==='Linear';
+    const easeName=isLinear?'Linear':pickerDirection+pickerFamily;
+    const easeIndex=types.findIndex(([name])=>name===easeName);
+    if(easeIndex<0)return;
+    ease.value=easeIndex;
+    $('easePickerValue').textContent='EaseType.'+easeName;
+    familyOptions.querySelectorAll('button').forEach(button=>{
+      const selected=button.dataset.family===pickerFamily;
+      button.classList.toggle('active',selected);
+      button.setAttribute('aria-pressed',String(selected));
+    });
+    directionOptions.querySelectorAll('button').forEach(button=>{
+      const selected=!isLinear&&button.dataset.direction===pickerDirection;
+      button.disabled=isLinear;
+      button.classList.toggle('active',selected);
+      button.setAttribute('aria-pressed',String(selected));
+    });
+    ease.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+  familyOptions.addEventListener('click',event=>{const button=event.target.closest('button[data-family]');if(!button)return;pickerFamily=button.dataset.family;updateEasePicker()});
+  directionOptions.addEventListener('click',event=>{const button=event.target.closest('button[data-direction]');if(!button)return;pickerDirection=button.dataset.direction;updateEasePicker()});
+  updateEasePicker();
+
+  function getCategory(name){
+    if(name==='Linear')return 'linear';
+    if(name.includes('Sine'))return 'sine';
+    if(/Quad|Cubic|Quart|Quint/.test(name))return 'polynomial';
+    if(/Expo|Circ/.test(name))return 'expo-circ';
+    if(/Back|Elastic/.test(name))return 'overshoot';
+    return 'bounce';
+  }
+  function getDirection(name){
+    if(name.startsWith('InOut'))return 'inout';
+    if(name.startsWith('In'))return 'in';
+    if(name.startsWith('Out'))return 'out';
+    return 'neutral';
+  }
+
+  const filterBar=document.createElement('div');
+  filterBar.className='filter-bar';
+  filterBar.setAttribute('aria-label','EaseType filters');
+  filterBar.innerHTML=
+    '<div class="filter-group" data-filter-group="category"><span class="filter-label">Family</span>'+
+    '<button class="active" data-filter="all">All</button><button data-filter="linear">Linear</button><button data-filter="sine">Sine</button>'+
+    '<button data-filter="polynomial">Polynomial</button><button data-filter="expo-circ">Expo / Circ</button>'+
+    '<button data-filter="overshoot">Overshoot</button><button data-filter="bounce">Bounce</button></div>'+
+    '<div class="filter-group" data-filter-group="direction"><span class="filter-label">Direction</span>'+
+    '<button class="active" data-filter="all">All</button><button data-filter="in">In</button>'+
+    '<button data-filter="out">Out</button><button data-filter="inout">InOut</button></div>';
+  grid.before(filterBar);
+
+  const syncedTiles=[...document.querySelectorAll('.tile')];
+  syncedTiles.forEach((tile,index)=>{
+    const name=types[index][0];
+    tile.dataset.category=getCategory(name);
+    tile.dataset.direction=getDirection(name);
+    const stage=tile.querySelector('.stage');
+    stage.insertAdjacentHTML('afterbegin','<span class="point-marker start-marker"><b>A</b></span><span class="point-marker end-marker"><b>B</b></span>');
+  });
+
+  const groupDefinitions=[
+    ['neutral','Linear'],
+    ['in','Ease In'],
+    ['out','Ease Out'],
+    ['inout','Ease InOut']
+  ];
+  const groupMap={};
+  grid.innerHTML='';
+  groupDefinitions.forEach(([key,label])=>{
+    const section=document.createElement('section');
+    section.className='ease-group';
+    section.dataset.easeGroup=key;
+    section.innerHTML='<div class="ease-group-head"><h3>'+label+'</h3><span class="ease-group-count" data-group-count>0</span></div><div class="ease-group-grid"></div>';
+    grid.appendChild(section);
+    groupMap[key]=section;
+  });
+  syncedTiles.forEach(tile=>groupMap[tile.dataset.direction].querySelector('.ease-group-grid').appendChild(tile));
+
+  const activeFilters={category:'all',direction:'all'};
+  function applyFilters(){
+    let visible=0;
+    syncedTiles.forEach(tile=>{
+      const categoryMatch=activeFilters.category==='all'||tile.dataset.category===activeFilters.category;
+      const directionMatch=activeFilters.direction==='all'||tile.dataset.direction===activeFilters.direction;
+      tile.hidden=!(categoryMatch&&directionMatch);
+      if(!tile.hidden)visible++;
+    });
+    Object.entries(groupMap).forEach(([key,section])=>{
+      const groupVisible=syncedTiles.filter(tile=>tile.dataset.direction===key&&!tile.hidden).length;
+      section.hidden=groupVisible===0;
+      section.querySelector('[data-group-count]').textContent=groupVisible+' types';
+    });
+    $('count').textContent=visible;
+  }
+  filterBar.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{
+    const group=button.closest('[data-filter-group]');
+    const key=group.dataset.filterGroup;
+    activeFilters[key]=button.dataset.filter;
+    group.querySelectorAll('button').forEach(item=>item.classList.toggle('active',item===button));
+    applyFilters();
+  }));
+  applyFilters();
+
+  const syncedGridStart=performance.now();
+  function syncGrid(now){
+    const elapsed=(now-syncedGridStart)%2250,progress=Math.min(1,elapsed/1800);
+    syncedTiles.forEach((tile,index)=>{
+      const stage=tile.querySelector('.stage');
+      const dot=tile.querySelector('.dot');
+      const padding=Math.max(48,stage.clientWidth*.22);
+      const startX=padding;
+      const endX=stage.clientWidth-padding-dot.offsetWidth;
+      const eased=types[index][1](progress);
+      dot.style.transform='translateX('+(startX+(endX-startX)*eased)+'px)';
+      tile.querySelector('.start-marker').style.left=(startX+dot.offsetWidth/2)+'px';
+      tile.querySelector('.end-marker').style.left=(endX+dot.offsetWidth/2)+'px';
+    });
+    requestAnimationFrame(syncGrid);
+  }
+  requestAnimationFrame(syncGrid);
+</script>
+</body>
+</html>
