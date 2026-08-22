@@ -1,19 +1,124 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="favicon.svg?v=2" type="image/svg+xml"><meta name="theme-color" content="#0c1018">
-<meta name="description" content="Compare easing for position, scale and rotation."><title>Ease Lab</title>
-<link rel="stylesheet" href="styles.css"></head><body><main class="shell">
-<header class="app-header"><h1>Ease Lab</h1><nav class="tabs" role="tablist" aria-label="Lab view"><button id="overviewTab" class="active" role="tab" aria-selected="true">Ease Gallery</button><button id="experimentTab" role="tab" aria-selected="false">Motion Editor</button></nav></header>
-<section id="overviewPanel" class="card" role="tabpanel"><div class="head"><div><h2>All EaseTypes</h2></div><div class="count"><span id="visibleCount">0</span> types</div></div><div class="overview-tools"><div class="toggles"><label class="toggle"><input id="overviewTransform" type="checkbox" checked><span class="icon">↔</span>Transform</label><label class="toggle"><input id="overviewScale" type="checkbox" checked><span class="icon">◇</span>Scale</label><label class="toggle"><input id="overviewRotation" type="checkbox" checked><span class="icon">↻</span>Rotation</label></div></div><div id="overviewFamilyFilter" class="filters" aria-label="Ease family filter"><span class="filter-label">Families</span></div><div id="grid" class="grid"></div></section>
-<section id="experimentPanel" class="card experiment" role="tabpanel" hidden><aside class="sidebar">
-<section class="section"><div class="section-title"><div><div class="eyebrow">Channels</div><h2>Animation setup</h2><p>Select a property, then choose its curve.</p></div></div>
-<div class="ease-editor">
- <div id="propertyTabs" class="property-tabs" aria-label="Property to edit"><button class="property-tab active" data-channel="transform" type="button"><span>↔</span>Transform</button><button class="property-tab" data-channel="scale" type="button"><span>◇</span>Scale</button><button class="property-tab" data-channel="rotation" type="button"><span>↻</span>Rotation</button></div>
- <div class="ease-summary"><label class="toggle"><input id="channelEnabled" type="checkbox" checked><span id="channelEnabledLabel">Enabled</span></label><strong id="selectedEase">EaseType.InOutCubic</strong></div>
- <div class="ease-section"><span>Family</span><div id="familyOptions" class="family-options"></div></div>
- <div class="ease-section"><span>Direction</span><div id="directionOptions" class="direction-options"></div></div>
-</div>
-</section>
-<section class="section"><div class="section-title"><div><h3>Points</h3><p>Drag rows to reorder.</p></div><button id="addPoint" class="button primary" type="button">＋ Add</button></div><div id="pointList" class="point-list"></div><p class="hint">Keep at least 2 points. Select one and press Delete to remove it.</p></section></aside>
-<div class="output"><div class="toolbar"><div class="transport"><button id="play" class="button primary" type="button">❚❚ Pause</button><button id="restart" class="button" type="button">↺ Restart</button><span id="readout" class="readout">0.00 s · segment 1/1</span></div><div class="actions"><button id="undo" class="button" type="button" title="Undo (Ctrl/Cmd+Z)" disabled>↶ Undo</button><button id="redo" class="button" type="button" title="Redo (Ctrl/Cmd+Shift+Z)" disabled>↷ Redo</button><button id="addCenter" class="button" type="button">＋ Point at center</button></div></div><div class="timeline"><span id="timelineCurrent" class="timeline-time">0.00s</span><input id="timelineSlider" type="range" min="0" max="1000" value="0" step="1" aria-label="Animation timeline"><span id="timelineTotal" class="timeline-time">0.00s</span></div><div id="viewer" class="viewer" aria-label="1600 by 900 animation canvas. Click to add a point and drag markers to move them."><div id="canvas" class="canvas"><svg class="path" viewBox="0 0 1600 900"><polyline id="pathLine" points=""></polyline></svg><div id="vGuide" class="guide v"></div><div id="hGuide" class="guide h"></div><div id="outputObject" class="object"></div><div id="markers"></div></div></div><div class="footer"><span>1600 × 900 coordinates · Click empty space to add · Drag a marker or its gizmo handles</span><span>Hold <kbd>Shift</kbd> to align X or Y with another point</span></div></div></section>
-</main><script src="script.js"></script></body></html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml" />
+  <meta name="theme-color" content="#0c1018" />
+  <meta name="description" content="Compare easing for position, scale and rotation." />
+  <title>Ease Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="shell">
+    <header class="app-header">
+      <h1>Ease Lab</h1>
+      <nav class="tabs" role="tablist" aria-label="Lab view">
+        <button id="overviewTab" class="active" role="tab" aria-selected="true">Ease Gallery</button><button
+          id="experimentTab" role="tab" aria-selected="false">Motion Editor</button>
+      </nav>
+    </header>
+    <section id="overviewPanel" class="card" role="tabpanel">
+      <div class="head">
+        <div>
+          <h2>All EaseTypes</h2>
+        </div>
+        <div class="count"><span id="visibleCount">0</span> types</div>
+      </div>
+      <div class="overview-tools">
+        <div class="toggles">
+          <label class="toggle"><input id="overviewTransform" type="checkbox" checked /><span
+              class="icon">↔</span>Transform</label><label class="toggle"><input id="overviewScale" type="checkbox"
+              checked /><span class="icon">◇</span>Scale</label><label class="toggle"><input id="overviewRotation"
+              type="checkbox" checked /><span class="icon">↻</span>Rotation</label>
+        </div>
+      </div>
+      <div id="overviewFamilyFilter" class="filters" aria-label="Ease family filter"><span
+          class="filter-label">Families</span></div>
+      <div id="grid" class="grid"></div>
+    </section>
+    <section id="experimentPanel" class="card experiment" role="tabpanel" hidden>
+      <aside class="sidebar">
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <div class="eyebrow">Channels</div>
+              <h2>Animation setup</h2>
+              <p>Select a property, then choose its curve.</p>
+            </div>
+          </div>
+          <div class="ease-editor">
+            <div id="propertyTabs" class="property-tabs" aria-label="Property to edit">
+              <button class="property-tab active" data-channel="transform"
+                type="button"><span>↔</span>Transform</button><button class="property-tab" data-channel="scale"
+                type="button"><span>◇</span>Scale</button><button class="property-tab" data-channel="rotation"
+                type="button"><span>↻</span>Rotation</button>
+            </div>
+            <div class="ease-summary">
+              <label class="toggle"><input id="channelEnabled" type="checkbox" checked /><span
+                  id="channelEnabledLabel">Enabled</span></label><strong id="selectedEase">EaseType.InOutCubic</strong>
+            </div>
+            <div class="ease-section">
+              <span>Family</span>
+              <div id="familyOptions" class="family-options"></div>
+            </div>
+            <div class="ease-section">
+              <span>Direction</span>
+              <div id="directionOptions" class="direction-options"></div>
+            </div>
+          </div>
+        </section>
+        <section class="section">
+          <div class="section-title">
+            <div>
+              <h3>Points</h3>
+              <p>Drag rows to reorder.</p>
+            </div>
+            <button id="addPoint" class="button primary" type="button">＋ Add</button>
+          </div>
+          <div id="pointList" class="point-list"></div>
+          <p class="hint">Keep at least 2 points. Select one and press Delete to remove it.</p>
+        </section>
+      </aside>
+      <div class="output">
+        <div class="toolbar">
+          <div class="transport">
+            <button id="play" class="button primary" type="button">❚❚ Pause</button><button id="restart" class="button"
+              type="button">↺ Restart</button><span id="readout" class="readout">0.00 s · segment 1/1</span>
+          </div>
+          <div class="actions">
+            <button id="undo" class="button" type="button" title="Undo (Ctrl/Cmd+Z)" disabled>↶ Undo</button><button
+              id="redo" class="button" type="button" title="Redo (Ctrl/Cmd+Shift+Z)" disabled>↷ Redo</button><button
+              id="addCenter" class="button" type="button">＋ Point at center</button>
+          </div>
+        </div>
+        <div class="timeline">
+          <span id="timelineCurrent" class="timeline-time">0.00s</span><input id="timelineSlider" type="range" min="0"
+            max="1000" value="0" step="1" aria-label="Animation timeline" /><span id="timelineTotal"
+            class="timeline-time">0.00s</span>
+        </div>
+        <div id="viewer" class="viewer"
+          aria-label="1600 by 900 animation canvas. Click to add a point and drag markers to move them.">
+          <div id="canvas" class="canvas">
+            <svg class="path" viewBox="0 0 1600 900">
+              <polyline id="pathLine" points=""></polyline>
+            </svg>
+            <div id="vGuide" class="guide v"></div>
+            <div id="hGuide" class="guide h"></div>
+            <div id="outputObject" class="object"></div>
+            <div id="markers"></div>
+          </div>
+        </div>
+        <div class="footer">
+          <span>1600 × 900 coordinates · Click empty space to add · Drag a marker or its gizmo handles</span><span>Hold
+            <kbd>Shift</kbd> to align X or Y with another point</span>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>
