@@ -45,6 +45,7 @@ const E = [
   ["OutBounce", bounce],
   ["InOutBounce", (t) => (t < 0.5 ? (1 - bounce(1 - 2 * t)) / 2 : (1 + bounce(2 * t - 1)) / 2)],
 ];
+
 function bounce(t) {
   const n = 7.5625,
     d = 2.75;
@@ -60,6 +61,7 @@ function bounce(t) {
   t -= 2.625 / d;
   return n * t * t + 0.984375;
 }
+
 const CANVAS_W = 1600,
   CANVAS_H = 900,
   $ = (id) => document.getElementById(id),
@@ -72,9 +74,11 @@ function direction(n) {
   if (n.startsWith("In")) return "in";
   return "out";
 }
+
 function baseFamily(n) {
   return n === "Linear" ? "Linear" : n.replace(/^(InOut|In|Out)/, "");
 }
+
 const groupMap = {};
 [
   ["linear", "Linear"],
@@ -89,6 +93,7 @@ const groupMap = {};
   $("grid").append(section);
   groupMap[key] = section;
 });
+
 const tiles = E.map(([n], i) => {
   const a = document.createElement("article");
   a.className = "tile";
@@ -102,6 +107,7 @@ const tiles = E.map(([n], i) => {
   groupMap[direction(n)].lastChild.append(a);
   return a;
 });
+
 const familyNames = ["Linear", "Sine", "Quad", "Cubic", "Quart", "Quint", "Expo", "Circ", "Back", "Elastic", "Bounce"],
   selectedFamilies = new Set();
 function applyOverviewFamily() {
@@ -124,6 +130,7 @@ function applyOverviewFamily() {
       button.setAttribute("aria-pressed", active);
     });
 }
+
 ["All", ...familyNames].forEach((name) => {
   const button = document.createElement("button");
   button.type = "button";
@@ -138,6 +145,7 @@ function applyOverviewFamily() {
   };
   $("overviewFamilyFilter").append(button);
 });
+
 applyOverviewFamily();
 const envelopes = E.map(([, fn]) => {
     let min = 0,
@@ -178,6 +186,7 @@ function overview(now) {
   });
   requestAnimationFrame(overview);
 }
+
 requestAnimationFrame(overview);
 const tabs = [$("overviewTab"), $("experimentTab")];
 tabs.forEach(
@@ -198,14 +207,17 @@ tabs.forEach(
         });
     }),
 );
+
 const channelDefaults = {
   transform: { enabled: true, family: "Cubic", direction: "InOut" },
   scale: { enabled: true, family: "Back", direction: "Out" },
   rotation: { enabled: true, family: "Sine", direction: "InOut" },
 };
+
 function makeChannels(source = channelDefaults) {
   return Object.fromEntries(Object.entries(source).map(([name, config]) => [name, { ...config }]));
 }
+
 let activeChannel = "transform";
 const easeFamilies = ["Linear", "Sine", "Quad", "Cubic", "Quart", "Quint", "Expo", "Circ", "Back", "Elastic", "Bounce"],
   easeDirections = ["In", "Out", "InOut"];
@@ -217,6 +229,7 @@ easeFamilies.forEach((name) => {
   b.textContent = name;
   $("familyOptions").append(b);
 });
+
 easeDirections.forEach((name) => {
   const b = document.createElement("button");
   b.type = "button";
@@ -225,9 +238,11 @@ easeDirections.forEach((name) => {
   b.textContent = name;
   $("directionOptions").append(b);
 });
+
 function configEase(c) {
   return c.family === "Linear" ? "Linear" : c.direction + c.family;
 }
+
 function renderEaseEditor() {
   const p = points.find((p) => p.id === selected) || points[0],
     pointIndex = points.indexOf(p),
@@ -253,6 +268,7 @@ function renderEaseEditor() {
     b.setAttribute("aria-pressed", on);
   });
 }
+
 document.querySelectorAll(".property-tab").forEach(
   (b) =>
     (b.onclick = () => {
@@ -261,6 +277,7 @@ document.querySelectorAll(".property-tab").forEach(
       renderEaseEditor();
     }),
 );
+
 $("familyOptions").onclick = (e) => {
   const b = e.target.closest("[data-family]"),
     p = points.find((p) => p.id === selected);
@@ -270,6 +287,7 @@ $("familyOptions").onclick = (e) => {
   renderEaseEditor();
   restartFromPreviousPoint();
 };
+
 $("directionOptions").onclick = (e) => {
   const b = e.target.closest("[data-direction]"),
     p = points.find((p) => p.id === selected);
@@ -279,6 +297,7 @@ $("directionOptions").onclick = (e) => {
   renderEaseEditor();
   restartFromPreviousPoint();
 };
+
 $("channelEnabled").onchange = (e) => {
   const p = points.find((p) => p.id === selected),
     pointIndex = points.indexOf(p);
@@ -288,6 +307,7 @@ $("channelEnabled").onchange = (e) => {
   renderEaseEditor();
   restartFromPreviousPoint();
 };
+
 let nextId = 3,
   points = [
     { id: 1, x: 100, y: 300, scale: 0.65, rotation: -35, channels: makeChannels() },
@@ -307,13 +327,16 @@ document.querySelector(".hint").textContent = "Keep at least 2 points. Select on
 function cloneState(value) {
   return JSON.parse(JSON.stringify(value));
 }
+
 function currentHistoryState() {
   return { points: cloneState(points), nextId, selected, activeChannel };
 }
+
 function updateHistoryButtons() {
   $("undo").disabled = historyIndex <= 0;
   $("redo").disabled = historyIndex >= history.length - 1;
 }
+
 function commitHistory() {
   const state = currentHistoryState(),
     current = history[historyIndex];
@@ -327,11 +350,13 @@ function commitHistory() {
   historyIndex = history.length - 1;
   updateHistoryButtons();
 }
+
 function syncHistoryContext() {
   if (historyIndex < 0) return;
   history[historyIndex].selected = selected;
   history[historyIndex].activeChannel = activeChannel;
 }
+
 function restoreHistory(index) {
   if (index < 0 || index >= history.length) return;
   const state = history[index];
@@ -345,32 +370,40 @@ function restoreHistory(index) {
   restart();
   updateHistoryButtons();
 }
+
 function undo() {
   restoreHistory(historyIndex - 1);
 }
+
 function redo() {
   restoreHistory(historyIndex + 1);
 }
+
 commitHistory();
 function bounds() {
   return { w: CANVAS_W, h: CANVAS_H };
 }
+
 function norm(p) {
   return Object.assign({}, p, { x: clamp(p.x, 0, CANVAS_W), y: clamp(p.y, 0, CANVAS_H) });
 }
+
 function updateCanvasScale() {
   const viewer = $("viewer");
   if (viewer.clientWidth) $("canvas").style.setProperty("--canvas-scale", viewer.clientWidth / CANVAS_W);
 }
+
 function restart() {
   start = performance.now();
   paused = 0;
 }
+
 function restartFromPreviousPoint() {
   const index = points.findIndex((p) => p.id === selected);
   if (index > 0) seekToPoint(points[index - 1].id);
   else restart();
 }
+
 function setPlayback(next) {
   if (next === playing) return;
   if (next) start = performance.now() - paused;
@@ -378,6 +411,7 @@ function setPlayback(next) {
   playing = next;
   $("play").textContent = playing ? "❚❚ Pause" : "▶ Play";
 }
+
 function addAt(x, y) {
   const prev = points.at(-1),
     p = norm({
@@ -395,6 +429,7 @@ function addAt(x, y) {
   renderAll();
   restart();
 }
+
 function del(id) {
   if (points.length <= 2) return;
   const i = points.findIndex((p) => p.id === id);
@@ -404,6 +439,7 @@ function del(id) {
   renderAll();
   restart();
 }
+
 function reorder(a, b) {
   if (a === b) return;
   const i = points.findIndex((p) => p.id === a),
@@ -415,6 +451,7 @@ function reorder(a, b) {
   renderAll();
   restart();
 }
+
 function focusPoint(p, row, list) {
   if (selected === p.id) return;
   selected = p.id;
@@ -423,6 +460,7 @@ function focusPoint(p, row, list) {
   renderMarkers();
   renderEaseEditor();
 }
+
 function renderList() {
   const list = $("pointList");
   list.innerHTML = "";
@@ -508,6 +546,7 @@ function renderList() {
     list.append(row);
   });
 }
+
 function field(k, l, v) {
   return (
     '<div class="field"><label>' +
@@ -521,6 +560,7 @@ function field(k, l, v) {
     '"></div>'
   );
 }
+
 function renderMarkers() {
   const box = $("markers");
   box.innerHTML = "";
@@ -584,6 +624,7 @@ function renderMarkers() {
   }
   $("pathLine").setAttribute("points", points.map((p) => p.x + "," + p.y).join(" "));
 }
+
 function bindGizmo(g, p) {
   const rotate = g.querySelector(".gizmo-rotate"),
     scale = g.querySelector(".gizmo-scale");
@@ -620,6 +661,7 @@ function bindGizmo(g, p) {
     handle.onpointercancel = finishGizmoDrag;
   });
 }
+
 function previewPoint(id) {
   const p = points.find((p) => p.id === id);
   if (!p) return;
@@ -628,13 +670,16 @@ function previewPoint(id) {
   o.style.top = p.y + "px";
   o.style.transform = "translate(-50%,-50%) scale(" + p.scale + ") rotate(" + p.rotation + "deg)";
 }
+
 function pointDuration(p) {
   return Math.max(50, Number(p.duration) || 800);
 }
+
 function pointTimeline(id) {
   const index = points.findIndex((p) => p.id === id);
   return points.slice(1, Math.max(1, index + 1)).reduce((total, p) => total + pointDuration(p), 0);
 }
+
 function beginGizmoDrag(state) {
   state.wasPlaying = playing;
   if (playing) setPlayback(false);
@@ -642,6 +687,7 @@ function beginGizmoDrag(state) {
   gizmoDrag = state;
   previewPoint(state.id);
 }
+
 function finishGizmoDrag() {
   if (!gizmoDrag) return;
   const state = gizmoDrag,
@@ -653,11 +699,13 @@ function finishGizmoDrag() {
   seekToPoint(state.id);
   if (resume) setPlayback(true);
 }
+
 function liveGizmo(p) {
   const marker = document.querySelector('.marker[data-id="' + p.id + '"]');
   if (marker) marker.dataset.values = "s " + p.scale.toFixed(2) + " · r " + Math.round(p.rotation) + "°";
   previewPoint(p.id);
 }
+
 function renderAll() {
   updateCanvasScale();
   renderList();
@@ -672,6 +720,7 @@ function coords(e) {
     y = ((e.clientY - r.top - viewer.clientTop) / viewer.clientHeight) * CANVAS_H;
   return { x: clamp(x, 0, CANVAS_W), y: clamp(y, 0, CANVAS_H) };
 }
+
 function snap(c, exclude) {
   const q = points.filter((p) => p.id !== exclude);
   if (!q.length) return Object.assign(c, { gx: null, gy: null });
@@ -679,12 +728,14 @@ function snap(c, exclude) {
     py = q.reduce((a, p) => (Math.abs(p.y - c.y) < Math.abs(a.y - c.y) ? p : a));
   return Math.abs(px.x - c.x) <= Math.abs(py.y - c.y) ? { x: px.x, y: c.y, gx: px.x, gy: null } : { x: c.x, y: py.y, gx: null, gy: py.y };
 }
+
 function guides(x = null, y = null) {
   $("vGuide").style.display = x == null ? "none" : "block";
   $("hGuide").style.display = y == null ? "none" : "block";
   if (x != null) $("vGuide").style.left = x + "px";
   if (y != null) $("hGuide").style.top = y + "px";
 }
+
 function updatePoint(p, e, m) {
   let c = coords(e);
   if (e.shiftKey) c = snap(c, p.id);
@@ -697,6 +748,7 @@ function updatePoint(p, e, m) {
   guides(c.gx, c.gy);
   restart();
 }
+
 $("viewer").onclick = (e) => {
   if (e.target.closest(".marker") || e.target.closest(".object") || e.target.closest(".point-gizmo")) return;
   let c = coords(e);
@@ -705,20 +757,24 @@ $("viewer").onclick = (e) => {
   guides(c.gx, c.gy);
   setTimeout(() => guides(), 500);
 };
+
 $("addPoint").onclick = () => {
   const a = points.at(-1),
     bd = bounds();
   addAt(clamp(a.x + 70, 30, bd.w - 30), clamp(a.y + 55, 30, bd.h - 30));
 };
+
 $("addCenter").onclick = () => {
   const b = bounds();
   addAt(b.w / 2, b.h / 2);
 };
+
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Delete" || e.target.matches('input,textarea,select,[contenteditable="true"]')) return;
   e.preventDefault();
   del(selected);
 });
+
 document.addEventListener("keydown", (e) => {
   if (!(e.ctrlKey || e.metaKey) || e.altKey || $("experimentPanel").hidden || e.target.matches('input,textarea,select,[contenteditable="true"]')) return;
   const key = e.key.toLowerCase();
@@ -730,24 +786,29 @@ document.addEventListener("keydown", (e) => {
     redo();
   }
 });
+
 document.addEventListener("keydown", (e) => {
   if (e.code !== "Space" || $("experimentPanel").hidden || e.repeat) return;
   e.preventDefault();
   setPlayback(!playing);
 });
+
 $("restart").onclick = restart;
 $("play").onclick = () => setPlayback(!playing);
 $("undo").onclick = undo;
 $("redo").onclick = redo;
+
 function channel(n, point) {
   const c = point.channels[n];
   return { on: c.enabled, fn: map[configEase(c)] || map.Linear };
 }
+
 function effectiveValue(pointIndex, channelName, key) {
   let value = points[0][key];
   for (let i = 1; i <= pointIndex; i++) if (points[i].channels[channelName].enabled) value = points[i][key];
   return value;
 }
+
 function timing() {
   const count = points.length - 1,
     durations = points.slice(1).map(pointDuration),
@@ -755,6 +816,7 @@ function timing() {
     endPause = 450;
   return { count, durations, motionTotal, endPause, cycle: Math.max(50, motionTotal + endPause) };
 }
+
 function updateTimeline(elapsed, total) {
   const visible = clamp(elapsed, 0, total),
     value = clamp(visible / total, 0, 1);
@@ -762,11 +824,14 @@ function updateTimeline(elapsed, total) {
   $("timelineCurrent").textContent = (visible / 1000).toFixed(2) + "s";
   $("timelineTotal").textContent = (total / 1000).toFixed(2) + "s";
 }
+
 const timelineSlider = $("timelineSlider");
+
 timelineSlider.onpointerdown = () => {
   scrubbing = true;
   if (playing) setPlayback(false);
 };
+
 timelineSlider.oninput = (e) => {
   if (playing) setPlayback(false);
   const info = timing();
@@ -774,15 +839,19 @@ timelineSlider.oninput = (e) => {
   start = performance.now() - paused;
   updateTimeline(paused, info.motionTotal);
 };
+
 timelineSlider.onpointerup = () => {
   scrubbing = false;
 };
+
 timelineSlider.onpointercancel = () => {
   scrubbing = false;
 };
+
 timelineSlider.onchange = () => {
   scrubbing = false;
 };
+
 function renderAtTime(elapsed, info = timing()) {
   const { count, durations, motionTotal, cycle } = info;
   elapsed = clamp(elapsed, 0, cycle);
@@ -820,12 +889,14 @@ function renderAtTime(elapsed, info = timing()) {
     (Math.min(elapsed, motionTotal) / 1000).toFixed(2) + " s · " + (elapsed >= motionTotal ? "restart pause" : "segment " + (seg + 1) + "/" + count);
   updateTimeline(elapsed, motionTotal);
 }
+
 function seekToPoint(id) {
   const info = timing();
   paused = clamp(pointTimeline(id), 0, info.motionTotal);
   start = performance.now() - paused;
   renderAtTime(paused, info);
 }
+
 function animate(now) {
   if (gizmoDrag) {
     requestAnimationFrame(animate);
@@ -844,6 +915,7 @@ function animate(now) {
   }
   requestAnimationFrame(animate);
 }
+
 requestAnimationFrame(animate);
 new ResizeObserver(() => {
   updateCanvasScale();
