@@ -556,7 +556,6 @@ function renderList() {
           v = Number(e.target.value);
         if (!Number.isFinite(v)) return;
         p[k] = k === "scale" ? Math.max(0, v) : k === "duration" ? Math.max(50, v) : v;
-        if (k === "x" || k === "y") Object.assign(p, norm(p));
         renderMarkers();
         restart();
       };
@@ -622,7 +621,6 @@ function renderMarkers() {
   const box = $("markers");
   box.innerHTML = "";
   points.forEach((p, i) => {
-    Object.assign(p, norm(p));
     const m = document.createElement("button");
     m.type = "button";
     m.className = "marker" + (p.id === selected ? " selected" : "");
@@ -976,7 +974,6 @@ function animate(now) {
 requestAnimationFrame(animate);
 new ResizeObserver(() => {
   updateCanvasScale();
-  points = points.map(norm);
   renderMarkers();
 }).observe($("viewer"));
 
